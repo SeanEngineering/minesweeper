@@ -35,11 +35,11 @@ public class Main {
 					System.out.printf("Move: %s\n\n", move);
 					game.displayGrid();
 					System.out.println();
-					System.out.print("Input y coordinate: ");
-					numberX = myObjScanner.nextInt();
 					System.out.print("Input x coordinate: ");
+					numberX = myObjScanner.nextInt();
+					System.out.print("Input y coordinate: ");
 					numberY = myObjScanner.nextInt();
-					gameStatus = game.setPositionGrid(numberY, numberX);
+					gameStatus = game.setPositionGrid(numberX, numberY);
 					internalStatus = false;
 					move++;
 				} catch (Exception e) {

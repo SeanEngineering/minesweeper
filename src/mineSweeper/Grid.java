@@ -46,22 +46,58 @@ public class Grid extends Row{
 		System.out.println(mines.getMines());
 	}
 	
+	public void revealTile(int row, int col) {
+		
+		if (gridList.get(col).getDisplayIndexString(row) == "■") {
+			ArrayList<Integer[]> adjacentMines = new ArrayList<>();
+			ArrayList<Integer[]> tiles = nearbyTiles(col, row);
+			for (Integer[] mine: mines.getMines()) {
+				for (Integer[] tile: tiles) {
+					if (tile[0] == mine[0] && tile[1] == mine[1]) {
+						adjacentMines.add(tile);
+					}
+				}
+			}
+			if (adjacentMines.size() == 0) {
+				gridList.get(col).setDisplayRowIndex(row, "□");
+				for (Integer[] tile: tiles) {
+					revealTile(tile[0], tile[1]);
+				}
+				
+			} else {
+				gridList.get(col).setDisplayRowIndex(row, adjacentMines.size());
+			};
+			
+		}
+
+	}
+	
+	public ArrayList<Integer[]> nearbyTiles(int row, int col) {
+		ArrayList<Integer[]> tiles = new ArrayList<>();
+		for (int xOffset = -1; xOffset < 2; xOffset++) {
+			for (int yOffset = -1; yOffset < 2; yOffset++) {
+				if ((xOffset+row) > -1 && (xOffset+row) < length && (yOffset+col) > -1 && (yOffset+col) < height) {
+					Integer[] tile = {(col + yOffset),(row + xOffset)};
+					tiles.add(tile);
+				}
+			}
+		}
+		return tiles;
+		
+	}
+	
 	public boolean setPosition(int row, int col) {
 		if (gridList.get(col).getRowIndex(row) < 0) {
 			System.out.println("BOOM! You lose...");
 			displayMinesToGrid();
 			showGrid();
 			return false;
+		} else if (gridList.get(col).getDisplayIndexString(row) !=  "■") {
+			System.out.println("invalid move");
+			return true;
 		}
-		for (int colP = col-1; colP < (col+2); colP++) {
-			for (int rowP = row-1; rowP < (row+2); rowP++) {
-				if ((rowP >= 0) && (colP >= 0) && (rowP < length) && (colP < height) && (gridList.get(colP).getRowIndex(rowP) >= 0) && (gridList.get(colP).getDisplayIndexString(rowP) == " ")) {
-					int lowest = mines.findClosest(rowP, colP);
-					gridList.get(colP).setRowIndex(rowP, 0);
-					gridList.get(colP).setDisplayRowIndex(rowP, lowest);
-				} 
-			}
-		}
+		revealTile(row, col);
+		
 		System.out.println("Placement successfull at x"+row+" y"+col);
 		return gameContinues();
 	}
@@ -89,6 +125,7 @@ public class Grid extends Row{
 		showGrid();
 		return false;
 	}
+	
 }
 
 	

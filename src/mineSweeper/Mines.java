@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class Mines {
-	public ArrayList<Integer> mines;
+	public ArrayList<Integer[]> mines;
 	int length;
 	int height;
 	int numMines;
@@ -17,7 +17,7 @@ public class Mines {
 		
 	}
 	public void generateMines() {
-		ArrayList<Integer> numberCounter = new ArrayList<Integer>();
+		ArrayList<Integer[]> numberCounter = new ArrayList<Integer[]>();
 		boolean inArray = false;
 		boolean check = true;
 		
@@ -25,40 +25,27 @@ public class Mines {
 			check = true;
 			while(check) {
 				inArray = false;
-				int randomNum = (int) (Math.random() * length * height);
-				for (int numbers: numberCounter) {
-					if (randomNum == numbers) {
+				int randomNumX = (int) (Math.random() * length);
+				int randomNumY = (int) (Math.random() * height);
+				for (Integer[] numbers: numberCounter) {
+					if (randomNumX == numbers[0] && randomNumY == numbers[1]) {
 						inArray = true;
 						break;
 					}
 				}
 				if (inArray == false) {
-					numberCounter.add(randomNum);
+					Integer[] thisIndex = {randomNumX, randomNumY};
+					numberCounter.add(thisIndex);
 					check=false;
 				}
 			}
 		}
 		
-		mines = (ArrayList<Integer>) numberCounter.stream().sorted().collect(Collectors.toList());
+		mines = (ArrayList<Integer[]>) numberCounter.stream().collect(Collectors.toList());
 	}
 	
-	public int findClosest(int row, int col) {
-		//To get a mine column we take the row mod and divide by the length
-		int lowest = length-1;
-		for (int mine: mines) {
-			int rowM = mine%length;
-			int colM = (mine-rowM)/height;
-			int abs = Math.abs(row-rowM) + Math.abs(col-colM);
-			if (abs < lowest) {
-				lowest = abs;
-			}
-		}
-		return lowest;
-		
-		
-	}
 	
-	public ArrayList<Integer> getMines(){
+	public ArrayList<Integer[]> getMines(){
 		return mines;
 	}
 	

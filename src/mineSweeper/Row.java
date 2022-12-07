@@ -9,13 +9,12 @@ public class Row {
 	protected ArrayList<String> displayArrayList;
 	public Row(int length) {
 		this.length = length;
-		displayArrayList = new ArrayList<>(Collections.nCopies(length, " "));
+		displayArrayList = new ArrayList<>(Collections.nCopies(length, "■"));
 	}
 	
-	public void createRow(int colnum, Mines mines) {
-		int convLength = (length*colnum);
-		for (int i = convLength; i < (length + convLength); i++){
-			if (checkMinesOnRow(mines.getMines(), i)) {
+	public void createRow(int column, Mines mines) {
+		for (int i = 0; i < length; i++){
+			if (checkMinesOnRow(mines.getMines(), i, column)) {
 				this.rowArrayList.add(-1);
 			} else {
 				this.rowArrayList.add(i);
@@ -53,9 +52,9 @@ public class Row {
 		return this.displayArrayList.get(index);
 	}
 	
-	public boolean checkMinesOnRow(ArrayList<Integer> mines, int value) {
-		for (int mine: mines) {
-			if (mine == value) {
+	public boolean checkMinesOnRow(ArrayList<Integer[]> mines, int xPos, int yPos) {
+		for (Integer[] mine: mines) {
+			if (mine[0] == xPos && mine[1] == yPos) {
 				return true;
 			}
 		}
